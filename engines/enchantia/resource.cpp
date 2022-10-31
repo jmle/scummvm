@@ -80,7 +80,7 @@ Graphics::Surface *SpriteResource::unpackFrame(byte *data, int32 size) {
 	uint16 height = READ_LE_UINT16(data + 2);
 	frame->create(width, height, Graphics::PixelFormat::createFormatCLUT8());
     data += 10;
-    byte *dest = (byte*)frame->pixels;
+    byte *dest = (byte*)frame->getPixels();
     memset(dest, 0, width * height);
     for (uint p = 0; p < 4; p++) {
         uint y = 0, yc = height;

@@ -671,7 +671,7 @@ void EnchantiaEngine::loadScene(int16 sceneLink, bool isLoadGame) {
 		initSceneSprites();
 	}
 
-	memcpy(_screen->pixels, _background->pixels, 320 * 200);
+	memcpy(_screen->getPixels(), _background->getPixels(), 320 * 200);
 	_system->copyRectToScreen((const byte*)_screen->getBasePtr(0, 0), 320, 0, 0, 320, 200);
 
 	_dirtyRects1->clear();
@@ -781,7 +781,7 @@ void EnchantiaEngine::drawSprites() {
 void EnchantiaEngine::drawSurface(Graphics::Surface *destSurface, Graphics::Surface *surface, int16 x, int16 y) {
 	// TODO Clipping
 	// TODO Merge with drawSprite
-	byte *src = (byte*)surface->pixels;
+	byte *src = (byte*)surface->getPixels();
 	byte *dst = (byte*)destSurface->getBasePtr(x, y);
 	int h = surface->h;
 	while (h--) {
@@ -864,7 +864,7 @@ void EnchantiaEngine::drawStrip(int16 stripNum, int16 x) {
 	strip->create(32, 200, Graphics::PixelFormat::createFormatCLUT8());
 	if (stripNum != 255) {
 		byte *stripSource = _sceneMap + 16 * READ_LE_UINT16(_sceneMap + stripNum * 2);
-		unpackRnc(stripSource, (byte*)strip->pixels);
+		unpackRnc(stripSource, (byte*)strip->getPixels());
 	}
 	drawSurface(_background, strip, x, 0);
 	strip->free();
@@ -881,7 +881,7 @@ void EnchantiaEngine::drawMouseCursor() {
 	}
 	if (cursorSprite().frameIndex != _currMouseSpriteIndex) {
 		Graphics::Surface *cursorSurface = _mouseSpr->getFrame(cursorSprite().frameIndex);
-		CursorMan.replaceCursor((const byte*)cursorSurface->pixels,
+		CursorMan.replaceCursor((const byte*)cursorSurface->getPixels(),
 			cursorSurface->w, cursorSurface->h, 0, 0, 0);
 		_currMouseSpriteIndex = cursorSprite().frameIndex;
 	}
@@ -1338,7 +1338,7 @@ void EnchantiaEngine::scrollScene(ScrollDirection direction) {
 		_sceneDecorations[i].x += scrollX;
 	_dirtyRects1->clear();
 	_dirtyRects2->clear();
-	memcpy(_screen->pixels, _background->pixels, 320 * 200);
+	memcpy(_screen->getPixels(), _background->getPixels(), 320 * 200);
 	drawSprites();
 	_system->copyRectToScreen((const byte*)_screen->getBasePtr(0, 0), 320, 0, 0, 320, 200);
 	_system->updateScreen();
@@ -1575,7 +1575,7 @@ Graphics::Surface *EnchantiaEngine::loadBitmap(const char *filename, int16 width
 	surface->create(width, height, Graphics::PixelFormat::createFormatCLUT8());
 	byte *data = new byte[fd.size()];
 	fd.read(data, fd.size());
-	unpackRnc(data, (byte*)surface->pixels);
+	unpackRnc(data, (byte*)surface->getPixels());
 	delete[] data;
 	fd.close();
 	return surface;	
