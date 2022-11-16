@@ -1173,6 +1173,7 @@ void EnchantiaEngine::updateAnimations() {
 	// TODO: Disable sprites out of x/y bounds
 }
 
+// updateScene__
 void EnchantiaEngine::updateSceneBackground() {
 
 	// Restore the background
@@ -1850,18 +1851,18 @@ void EnchantiaEngine::playSound(byte soundNum, Sprite &sprite) {
 }
 
 void EnchantiaEngine::runMenuBar() {
-#if 0 // TODO
-	static const struct { byte r, g, b; } menuBarColorTable[] = {
+    // TODO: refactor
+	static const struct Color menuBarColorTable[] = {
 		{7, 0, 0}, {15, 0, 0}, {23, 0, 0}, {31, 0, 0}, {39, 0, 0},
 		{47, 0, 0}, {55, 0, 0}, {63, 0, 0}, {0, 7, 0}, {0, 15, 0},
 		{0, 23, 0}, {0, 31, 0}, {0, 39, 0}, {0, 47, 0}, {0, 55, 0},
 		{0, 63, 0}, {0, 0, 7}, {0, 0, 15}, {0, 0, 23}, {0, 0, 31},
 		{0, 0, 39}, {0, 0, 47}, {0, 0, 55}, {0, 0, 63},
 	};
-#endif
 	enum { stRunning, stAction, stDone } status = stRunning;
-	uint rectPalCounter = 1, colorIndex = 0, menuCounter = 0;
-	int16 cursorX, y;
+    enum { kMenuTop, kMenuBottom } menuPosition = kMenuBottom;
+	uint colorIndex = 0, menuCounter = 0;
+	int16 cursorX, cursorY, y;
 	uint slotIndex = 0, prevSlotIndex = 0xFFFF;
 	MenuSlotAction currMenu = kMenuNone, newMenu = kMenuMain;
 	bool needRedraw = true;
@@ -1876,11 +1877,16 @@ void EnchantiaEngine::runMenuBar() {
 	_walkInfos[1].next = NULL;
 	_walkInfos[2].next = NULL;
 
-	cursorX = _mouseX;
-	y = _mouseY < 100 ? 0 : 168;
+    cursorX = _mouseX;
+    if (_mouseY < 100) {
+        menuPosition = kMenuTop;
+        y = 0;
+    } else {
+        menuPosition = kMenuBottom;
+        y = 168;
+    }
 
 	while (status != stDone && !shouldQuit()) {
-
 		if (currMenu != newMenu) {
 			currMenu = newMenu;
 			buildMenuBar(newMenu);
@@ -1891,14 +1897,16 @@ void EnchantiaEngine::runMenuBar() {
 			needRedraw = false;
 			drawSurface(_screen, _menuSurface, 0, y);
 		}
-		_screen->frameRect(Common::Rect(slotIndex * 32, y, slotIndex * 32 + 32, y + 32), 0xFF);
+
+		_screen->frameRect(Common::Rect(slotIndex * 32 + 3, y + 3, slotIndex * 32 + 29, y + 29), 0xFF);
 		_system->copyRectToScreen((const byte*)_screen->getBasePtr(0, y), 320, 0, y, 320, 32);
 		menuCounter++;
-		if (--rectPalCounter == 0) {
-			// TODO Set RGB values for index 255
-			if (++colorIndex >= 24)
-				colorIndex = 0;
-		}
+
+        // TODO: fix rect color refresh rate
+        setPaletteColor(colorIndex, menuBarColorTable[colorIndex]);
+        if (++colorIndex >= 24)
+            colorIndex = 0;
+
 		updateEvents();
 		cursorX = _mouseX;
 		if (_mouseButton == kLeftButton)
@@ -1928,6 +1936,13 @@ void EnchantiaEngine::runMenuBar() {
 	delete savedScreen;
 	_system->copyRectToScreen((const byte*)_screen->getBasePtr(0, 0), 320, 0, 0, 320, 200);
 	_system->updateScreen();
+}
+
+void EnchantiaEngine::setPaletteColor(uint16 index, Color c) {
+    _palette[0xFF * 3] = c.r;
+    _palette[0xFF * 3 + 1] = c.g;
+    _palette[0xFF * 3 + 2] = c.b;
+    setVgaPalette(_palette);
 }
 
 void EnchantiaEngine::updateMenuBar() {
