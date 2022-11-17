@@ -54,7 +54,7 @@
  * the compiler will hopefully print along with its own error message),
  * we try to make clear what is causing the error.
  */
-#define FORBIDDEN_SYMBOL_REPLACEMENT	FORBIDDEN_look_at_common_forbidden_h_for_more_info SYMBOL !%*
+//#define FORBIDDEN_SYMBOL_REPLACEMENT	FORBIDDEN_look_at_common_forbidden_h_for_more_info SYMBOL !%*
 
 
 #ifndef FORBIDDEN_SYMBOL_EXCEPTION_printf

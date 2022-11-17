@@ -212,7 +212,6 @@ SpriteDef *DatFile::getSpriteDef(uint16 id) {
 		if (_spriteDefs[i].selfId == id)
 			return &_spriteDefs[i];
 	error("DatFile::getSpriteDef() SpriteDef with ID %04X not found", id);
-	return NULL;
 }
 
 SpriteTemplate *DatFile::getSpriteTemplate(uint16 id) {
@@ -220,7 +219,6 @@ SpriteTemplate *DatFile::getSpriteTemplate(uint16 id) {
 		if (_spriteTemplates[i].selfId == id)
 			return &_spriteTemplates[i];
 	error("DatFile::getSpriteTemplate() SpriteTemplate with ID %04X not found", id);
-	return NULL;
 }
 
 byte *DatFile::getAnyAnimCode(uint type, uint16 id) {
@@ -230,7 +228,6 @@ byte *DatFile::getAnyAnimCode(uint type, uint16 id) {
 			return table.code + table.items[i].offset;
 	}
 	error("DatFile::getAnyAnimCode() Code in table %d with ID %04X not found", type, id);
-	return NULL;
 }
 
 SpriteDef *DatFile::getSceneSpriteDef(uint sceneIndex, uint index) {

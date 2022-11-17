@@ -159,10 +159,10 @@ Common::Error EnchantiaEngine::run() {
 	
 	_screen = new Graphics::Surface();
 	_screen->create(320, 200, Graphics::PixelFormat::createFormatCLUT8());
-	
+
 	_background = new Graphics::Surface();
 	_background->create(320, 200, Graphics::PixelFormat::createFormatCLUT8());
-	
+
 	_menuSurface = new Graphics::Surface();
 	_menuSurface->create(320, 32, Graphics::PixelFormat::createFormatCLUT8());
 	
@@ -1173,6 +1173,7 @@ void EnchantiaEngine::updateAnimations() {
 	// TODO: Disable sprites out of x/y bounds
 }
 
+// updateScene__
 void EnchantiaEngine::updateSceneBackground() {
 
 	// Restore the background
@@ -1318,7 +1319,7 @@ void EnchantiaEngine::scrollScene(ScrollDirection direction) {
 	int16 scrollX;
 	if (direction == kScrollLeft) {
 		_cameraStripNum--;
-		_background->move(32, 0, _background->h);
+		_background->move(32, 0, _background->h);           // TODO see https://github.com/jmle/scummvm/issues/9
 		drawStrip(_sceneStripTable[_cameraStripNum], 0);
 		scrollX = +32;
 	} else {
@@ -1850,18 +1851,18 @@ void EnchantiaEngine::playSound(byte soundNum, Sprite &sprite) {
 }
 
 void EnchantiaEngine::runMenuBar() {
-#if 0 // TODO
-	static const struct { byte r, g, b; } menuBarColorTable[] = {
+    // TODO: refactor
+	static const struct Color menuBarColorTable[] = {
 		{7, 0, 0}, {15, 0, 0}, {23, 0, 0}, {31, 0, 0}, {39, 0, 0},
 		{47, 0, 0}, {55, 0, 0}, {63, 0, 0}, {0, 7, 0}, {0, 15, 0},
 		{0, 23, 0}, {0, 31, 0}, {0, 39, 0}, {0, 47, 0}, {0, 55, 0},
 		{0, 63, 0}, {0, 0, 7}, {0, 0, 15}, {0, 0, 23}, {0, 0, 31},
 		{0, 0, 39}, {0, 0, 47}, {0, 0, 55}, {0, 0, 63},
 	};
-#endif
 	enum { stRunning, stAction, stDone } status = stRunning;
-	uint rectPalCounter = 1, colorIndex = 0, menuCounter = 0;
-	int16 cursorX, y;
+    enum { kMenuTop, kMenuBottom } menuPosition = kMenuBottom;
+	uint rectPalCounter = 32, colorIndex = 0, menuCounter = 0;
+	int16 cursorX, cursorY, y;
 	uint slotIndex = 0, prevSlotIndex = 0xFFFF;
 	MenuSlotAction currMenu = kMenuNone, newMenu = kMenuMain;
 	bool needRedraw = true;
@@ -1875,11 +1876,19 @@ void EnchantiaEngine::runMenuBar() {
 	_walkInfos[0].next = NULL;
 	_walkInfos[1].next = NULL;
 	_walkInfos[2].next = NULL;
-	
-	cursorX = _mouseX;
-	y = _mouseY < 100 ? 0 : 168;
-	
+
+    cursorX = _mouseX;
+    uint32 savedMouseY = _mouseY;
+    if (_mouseY < 100) {
+        menuPosition = kMenuTop;
+        y = 0;
+    } else {
+        menuPosition = kMenuBottom;
+        y = 168;
+    }
+
 	while (status != stDone && !shouldQuit()) {
+        _system->warpMouse(_mouseX, menuPosition == kMenuTop ? 16 : 184);
 	
 		if (currMenu != newMenu) {
 			currMenu = newMenu;
@@ -1895,7 +1904,8 @@ void EnchantiaEngine::runMenuBar() {
 		_system->copyRectToScreen((const byte*)_screen->getBasePtr(0, y), 320, 0, y, 320, 32);
 		menuCounter++;
 		if (--rectPalCounter == 0) {
-			// TODO Set RGB values for index 255
+            rectPalCounter = 32;    // TODO: fix rect color refresh rate
+            setPaletteColor(colorIndex, menuBarColorTable[colorIndex]);
 			if (++colorIndex >= 24)
 				colorIndex = 0;
 		}
@@ -1922,12 +1932,21 @@ void EnchantiaEngine::runMenuBar() {
 		}
 	}
 
+    _system->warpMouse(_mouseX, savedMouseY);
+
 	// Restore command bar background
 	_screen->copyFrom(*savedScreen);
 	savedScreen->free();
 	delete savedScreen;
 	_system->copyRectToScreen((const byte*)_screen->getBasePtr(0, 0), 320, 0, 0, 320, 200);
 	_system->updateScreen();
+}
+
+void EnchantiaEngine::setPaletteColor(uint16 index, Color c) {
+    _palette[0xFF * 3] = c.r;
+    _palette[0xFF * 3 + 1] = c.g;
+    _palette[0xFF * 3 + 2] = c.b;
+    setVgaPalette(_palette);
 }
 
 void EnchantiaEngine::updateMenuBar() {
