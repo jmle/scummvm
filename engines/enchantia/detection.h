@@ -26,38 +26,39 @@
 
 namespace Enchantia {
 
-enum EnchantiaDebugChannels {
-	kDebugTools = 1 << 0,
-};
+    enum EnchantiaDebugChannels {
+        kDebugTools = 1 << 0,
+    };
 
-extern const PlainGameDescriptor enchantiaGames[];
+    extern const PlainGameDescriptor enchantiaGames[];
 
-extern const ADGameDescription gameDescriptions[];
+    extern const ADGameDescription gameDescriptions[];
 
 } // namespace Enchantia
 
 class EnchantiaMetaEngineDetection : public AdvancedMetaEngineDetection {
-	static const DebugChannelDef debugFlagList[];
+    static const DebugChannelDef debugFlagList[];
 
 public:
-	EnchantiaMetaEngineDetection();
-	~EnchantiaMetaEngineDetection() override {}
+    EnchantiaMetaEngineDetection();
 
-	const char *getName() const override {
-		return "enchantia";
-	}
+    ~EnchantiaMetaEngineDetection() override {}
 
-	const char *getEngineName() const override {
-		return "Curse of Enchantia";
-	}
+    const char *getName() const override {
+        return "enchantia";
+    }
 
-	const char *getOriginalCopyright() const override {
-		return "Curse of Enchantia (C) 1992 Core Design";
-	}
+    const char *getEngineName() const override {
+        return "Curse of Enchantia";
+    }
 
-	const DebugChannelDef *getDebugChannels() const override {
-		return debugFlagList;
-	}
+    const char *getOriginalCopyright() const override {
+        return "Curse of Enchantia (C) 1992 Core Design";
+    }
+
+    const DebugChannelDef *getDebugChannels() const override {
+        return debugFlagList;
+    }
 };
 
 #endif

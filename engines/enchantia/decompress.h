@@ -40,39 +40,47 @@ namespace Enchantia {
 #define MIN_LENGTH  2
 #define HEADER_LEN  18
 
-class RncDecoder {
+    class RncDecoder {
 
-protected:
-	uint16 _rawTable[64];
-	uint16 _posTable[64];
-	uint16 _lenTable[64];
-	uint16 _crcTable[256];
+    protected:
+        uint16 _rawTable[64];
+        uint16 _posTable[64];
+        uint16 _lenTable[64];
+        uint16 _crcTable[256];
 
-	uint16 _bitBuffl;
-	uint16 _bitBuffh;
-	uint8 _bitCount;
+        uint16 _bitBuffl;
+        uint16 _bitBuffh;
+        uint8 _bitCount;
 
-	const uint8 *_srcPtr;
-	uint8 *_dstPtr;
+        const uint8 *_srcPtr;
+        uint8 *_dstPtr;
 
-	int16 _inputByteLeft;
+        int16 _inputByteLeft;
 
-public:
-	RncDecoder();
-	~RncDecoder();
-	int32 unpackM1(const void *input, uint16 inputSize, void *output);
-	int32 unpackM2(const void *input, void *output);
+    public:
+        RncDecoder();
 
-protected:
-	void initCrc();
-	uint16 crcBlock(const uint8 *block, uint32 size);
-	uint16 inputBits(uint8 amount);
-	void makeHufftable(uint16 *table);
-	uint16 inputValue(uint16 *table);
-	int getbit();
-};
+        ~RncDecoder();
 
-int32 unpackRnc(const byte *input, byte *output);
+        int32 unpackM1(const void *input, uint16 inputSize, void *output);
+
+        int32 unpackM2(const void *input, void *output);
+
+    protected:
+        void initCrc();
+
+        uint16 crcBlock(const uint8 *block, uint32 size);
+
+        uint16 inputBits(uint8 amount);
+
+        void makeHufftable(uint16 *table);
+
+        uint16 inputValue(uint16 *table);
+
+        int getbit();
+    };
+
+    int32 unpackRnc(const byte *input, byte *output);
 
 } // End of namespace Enchantia
 

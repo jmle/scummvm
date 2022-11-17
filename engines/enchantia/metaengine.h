@@ -27,21 +27,24 @@
 
 class EnchantiaMetaEngine : public AdvancedMetaEngine {
 public:
-	const char *getName() const override;
+    const char *getName() const override;
 
-	Common::Error createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const override;
+    Common::Error createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const override;
 
-	/**
-	 * Determine whether the engine supports the specified MetaEngine feature.
-	 *
-	 * Used by e.g. the launcher to determine whether to enable the Load button.
-	 */
-	virtual bool hasFeature(MetaEngineFeature f) const override;
+    /**
+     * Determine whether the engine supports the specified MetaEngine feature.
+     *
+     * Used by e.g. the launcher to determine whether to enable the Load button.
+     */
+    virtual bool hasFeature(MetaEngineFeature f) const override;
 
-	virtual SaveStateList listSaves(const char *target) const override;
-	virtual int getMaximumSaveSlot() const override;
-	virtual void removeSaveState(const char *target, int slot) const override;
-	SaveStateDescriptor querySaveMetaInfos(const char *target, int slot) const override;
+    virtual SaveStateList listSaves(const char *target) const override;
+
+    virtual int getMaximumSaveSlot() const override;
+
+    virtual void removeSaveState(const char *target, int slot) const override;
+
+    SaveStateDescriptor querySaveMetaInfos(const char *target, int slot) const override;
 };
 
 #endif

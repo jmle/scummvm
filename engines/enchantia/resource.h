@@ -31,18 +31,25 @@
 
 namespace Enchantia {
 
-class SpriteResource {
-public:
-	SpriteResource();
-	~SpriteResource();
-	void load(const char *filename);
-	uint getCount() const { return _frames.size(); }
-	Graphics::Surface *getFrame(uint index) { return _frames[index]; }
-protected:
-	Common::Array<Graphics::Surface*> _frames;
-	void free();
-	Graphics::Surface *unpackFrame(byte *data, int32 size);
-};
+    class SpriteResource {
+    public:
+        SpriteResource();
+
+        ~SpriteResource();
+
+        void load(const char *filename);
+
+        uint getCount() const { return _frames.size(); }
+
+        Graphics::Surface *getFrame(uint index) { return _frames[index]; }
+
+    protected:
+        Common::Array<Graphics::Surface *> _frames;
+
+        void free();
+
+        Graphics::Surface *unpackFrame(byte *data, int32 size);
+    };
 
 } // End of namespace Enchantia
 

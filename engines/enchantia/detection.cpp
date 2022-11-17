@@ -24,35 +24,36 @@
 
 namespace Enchantia {
 
-const PlainGameDescriptor enchantiaGames[] = {
-	{ "enchantia", "Curse of Enchantia" },
-	{ 0, 0 }
-};
+    const PlainGameDescriptor enchantiaGames[] = {
+            {"enchantia", "Curse of Enchantia"},
+            {0,           0}
+    };
 
-const ADGameDescription gameDescriptions[] = {
-	{
-		"enchantia",
-		"",
-		AD_ENTRY2s("title.dat", "839b7c735f720bea86623d0599d5025c", 47064,
-				   "curse.rs2", "d8bee05a01c20626cc48df3040b2caab", 3011),
-		Common::EN_ANY,
-		Common::kPlatformDOS,
-		ADGF_NO_FLAGS,
-		GUIO1(GUIO_NONE)
-	},
+    const ADGameDescription gameDescriptions[] = {
+            {
+                    "enchantia",
+                    "",
+                    AD_ENTRY2s("title.dat", "839b7c735f720bea86623d0599d5025c", 47064,
+                               "curse.rs2", "d8bee05a01c20626cc48df3040b2caab", 3011),
+                    Common::EN_ANY,
+                    Common::kPlatformDOS,
+                    ADGF_NO_FLAGS,
+                    GUIO1(GUIO_NONE)
+            },
 
-	AD_TABLE_END_MARKER
-};
+            AD_TABLE_END_MARKER
+    };
 
 } // namespace Enchantia
 
 const DebugChannelDef EnchantiaMetaEngineDetection::debugFlagList[] = {
-	{ Enchantia::kDebugTools, "Tools", "Tools debug level" },
-	DEBUG_CHANNEL_END
+        {Enchantia::kDebugTools, "Tools", "Tools debug level"},
+        DEBUG_CHANNEL_END
 };
 
 EnchantiaMetaEngineDetection::EnchantiaMetaEngineDetection() : AdvancedMetaEngineDetection(Enchantia::gameDescriptions,
-	sizeof(ADGameDescription), Enchantia::enchantiaGames) {
+                                                                                           sizeof(ADGameDescription),
+                                                                                           Enchantia::enchantiaGames) {
 }
 
 REGISTER_PLUGIN_STATIC(ENCHANTIA_DETECTION, PLUGIN_TYPE_ENGINE_DETECTION, EnchantiaMetaEngineDetection);
